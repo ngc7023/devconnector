@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
 import Alert from './components/layout/Alert';
 import Dashboard from './components/dashboard/Dashboard';
+// import ProfileForm from './components/profile-forms/ProfileForm';
 import PrivateRoute from './components/routing/PrivateRoute';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
@@ -34,6 +35,10 @@ const App = () => {
             path='dashboard'
             element={<PrivateRoute component={Dashboard} />}
           />
+          {/* <Route
+            path='create-profile'
+            element={<PrivateRoute component={ProfileForm} />}
+          /> */}
         </Routes>
       </Router>
     </Provider>
