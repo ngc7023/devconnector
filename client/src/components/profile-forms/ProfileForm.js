@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Fragment } from 'react';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createProfile, getCurrentProfile } from '../../actions/profile';
 
 const initialState = {
   company: '',
@@ -18,8 +19,36 @@ const initialState = {
   instagram: '',
 };
 
-const ProfileForm = (props) => {
+const ProfileForm = ({
+  profile: { profile, loading },
+  createProfile,
+  getCurrentProfile,
+}) => {
   const [formData, setFormData] = useState(initialState);
+  const creatingProfile = useMatch('/create-profile');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // if there is no profile, attempt to fetch one
+    if (!profile) getCurrentProfile();
+
+    // if we finished loading and we do have a profile
+    // then build our profileData
+    if (!loading && profile) {
+      const profileData = { ...initialState };
+      for (const key in profile) {
+        if (key in profileData) profileData[key] = profile[key];
+      }
+      for (const key in profile.social) {
+        if (key in profileData) profileData[key] = profile.social[key];
+      }
+      // the skills may be an array from our API response
+      if (Array.isArray(profileData.skills))
+        profileData.skills = profileData.skills.join(', ');
+      // set local state with the profileData
+      setFormData(profileData);
+    }
+  }, [loading, getCurrentProfile, profile]);
 
   const {
     company,
@@ -41,13 +70,13 @@ const ProfileForm = (props) => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  //   const onSubmit = (e) => {
-  //     e.preventDefault();
-  //     createProfile(formData, navigate, profile ? true : false);
-  //   };
+  const onSubmit = (e) => {
+    e.preventDefault();
+    createProfile(formData, navigate, profile ? true : false);
+  };
   return (
     <section className='container'>
-      {/* <h1 className='large text-primary'>
+      <h1 className='large text-primary'>
         {creatingProfile ? 'Create Your Profile' : 'Edit Your Profile'}
       </h1>
       <p className='lead'>
@@ -55,9 +84,9 @@ const ProfileForm = (props) => {
         {creatingProfile
           ? ` Let's get some information to make your`
           : ' Add some changes to your profile'}
-      </p> */}
+      </p>
       <small>* = required field</small>
-      <form className='form'>
+      <form className='form' onSubmit={onSubmit}>
         <div className='form-group'>
           <select name='status' value={status} onChange={onChange}>
             <option>* Select Professional Status</option>
@@ -224,6 +253,16 @@ const ProfileForm = (props) => {
   );
 };
 
-ProfileForm.propTypes = {};
+ProfileForm.propTypes = {
+  createProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+};
 
-export default ProfileForm;
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+});
+
+export default connect(mapStateToProps, { createProfile, getCurrentProfile })(
+  ProfileForm
+);
