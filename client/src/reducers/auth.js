@@ -28,7 +28,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         loading: false,
       };
-    case 'REGISTER_FA IL':
+    case 'REGISTER_FAIL':
     case 'AUTH_ERROR':
     case 'LOGIN_FAIL':
     case 'LOGOUT':
@@ -39,7 +39,6 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
         loading: false,
         user: null,
-        error: null,
       };
     case 'USER_LOADED':
       return {
