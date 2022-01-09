@@ -13,12 +13,12 @@ const Education = ({ education, deleteEducation }) => {
         {formatDate(edu.from)} - {edu.to ? formatDate(edu.to) : 'Now'}
       </td>
       <td>
-        {/* <button
+        <button
           onClick={() => deleteEducation(edu._id)}
           className='btn btn-danger'
         >
           Delete
-        </button> */}
+        </button>
       </td>
     </tr>
   ));
