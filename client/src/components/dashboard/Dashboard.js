@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import { getCurrentProfile } from '../../actions/profile';
 import { Link } from 'react-router-dom';
-// import ProfileForm from '../profile-forms/ProfileForm';
+import DashboardActions from './DashboardActions';
+import Experience from './Experience';
+import Education from './Education';
+import ProfileForm from '../profile-forms/ProfileForm';
 
 const Dashboard = ({
   getCurrentProfile,
@@ -23,7 +26,11 @@ const Dashboard = ({
         <i className='fas fa-user'> Welcome {user && user.name}</i>
       </p>
       {profile !== null ? (
-        <Fragment>has</Fragment>
+        <Fragment>
+          <DashboardActions />
+          <Experience experience={profile.experience} />
+          <Education education={profile.education} />
+        </Fragment>
       ) : (
         <Fragment>
           {' '}
